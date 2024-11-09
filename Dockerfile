@@ -18,12 +18,6 @@ EXPOSE 5000
 ENV FLASK_APP=app.py
 
 
-
-# genenv
-RUN --mount=type=secret,id=OPENWEATHER_API_KEY \
-  export OPENWEATHER_API_KEY=$(cat /run/secrets/OPENWEATHER_API_KEY) && \
-
-
   
 # Run the application
 CMD ["flask", "run", "--host=0.0.0.0"]
