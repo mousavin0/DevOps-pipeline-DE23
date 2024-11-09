@@ -34,7 +34,6 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          devopswithsam/githubactions:latest
-          devopswithsam/githubactions:${{ github.run_number }}
+          mousavin0/weather_app:latest
 
           
