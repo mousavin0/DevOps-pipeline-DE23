@@ -18,6 +18,9 @@ EXPOSE 5000
 ENV FLASK_APP=app.py
 
 
+# Accept the API key as a build argument and set it as an environment variable
+ARG OPENWEATHER_API_KEY
+ENV OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
   
 # Run the application
 CMD ["flask", "run", "--host=0.0.0.0"]
