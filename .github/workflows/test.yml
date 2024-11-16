@@ -55,3 +55,7 @@ jobs:
         with:
           name: error_log
           path: error_log.txt
+    
+      - name: Debug Conclusion
+        run: echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
+
