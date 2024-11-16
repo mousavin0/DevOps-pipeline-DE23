@@ -13,7 +13,7 @@ class TestFetchWeatherData(unittest.TestCase):
 
         # Assertions
         self.assertIsInstance(weather_data, list)  # Ensure a list is returned
-        self.assertTrue(len(weather_data) > 0)  # Ensure the list is not empty
+        self.assertTrue(len(weather_data) < 0)  # Ensure the list is not empty
 
         # Validate structure of the first entry
         first_entry = weather_data[0]
