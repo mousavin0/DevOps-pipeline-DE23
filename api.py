@@ -63,3 +63,7 @@ def extract_temp_humidity(weather_data):
             print("Warning: 'data' key missing in weather data response:", data)
 
     return temps, humidities, dates
+
+
+if __name__ == "__main__":
+    print(fetch_weather_data())

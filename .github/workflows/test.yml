@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Debug - Check if API key is set
         run: |
           if [[ -z "${{ secrets.OPENWEATHER_API_KEY }}" ]]; then
@@ -37,6 +37,9 @@ jobs:
           ls -alh $(pwd)/..
           echo "Listing files in the tests directory:"
           ls -alh tests/
+
+      - name: Set environment variables
+        run: echo "OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}" >> $GITHUB_ENV
 
 
       - name: Run unit tests
