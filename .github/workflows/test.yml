@@ -9,7 +9,7 @@ on:
         default: 'true'
 
 jobs:
-  # Run unit and integration tests together in one job
+  # Run unit and integration tests in one job
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,29 +24,34 @@ jobs:
         run: |
           echo "Running unit tests..."
           pytest tests/unit_test.py
-        continue-on-error: true  # Allow this step to fail but continue the workflow
 
       - name: Run integration tests
         id: integration_tests
         run: |
           echo "Running integration tests..."
           pytest tests/integration_test.py
-        continue-on-error: true  # Allow this step to fail but continue the workflow
+
+  # Logging job that will only run if the test job fails
+  log_errors:
+    runs-on: ubuntu-latest
+    needs: test  # This job will only run if the test job runs
+    if: ${{ needs.test.result == 'failure' && github.event.inputs.log_errors == 'true' }}  # Check if test job failed and log_errors is true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Capture error logs from unit tests
-        if: ${{ steps.unit_tests.outcome == 'failure' && github.event.inputs.log_errors == 'true' }}
+        if: ${{ needs.test.outputs.unit_tests_outcome == 'failure' }}
         run: |
-          echo "Unit tests failed. Error message: ${{ steps.unit_tests.error }}" >> error_log.txt
-          echo "Check the unit test logs above for more details." >> error_log.txt
+          echo "Unit tests failed. Check the logs for more details." >> error_log.txt
 
       - name: Capture error logs from integration tests
-        if: ${{ steps.integration_tests.outcome == 'failure' && github.event.inputs.log_errors == 'true' }}
+        if: ${{ needs.test.outputs.integration_tests_outcome == 'failure' }}
         run: |
-          echo "Integration tests failed. Error message: ${{ steps.integration_tests.error }}" >> error_log.txt
-          echo "Check the integration test logs above for more details." >> error_log.txt
+          echo "Integration tests failed. Check the logs for more details." >> error_log.txt
 
       - name: Upload error log if tests failed
-        if: ${{ github.event.inputs.log_errors == 'true' && (steps.unit_tests.outcome == 'failure' || steps.integration_tests.outcome == 'failure') }}
+        if: ${{ github.event.inputs.log_errors == 'true' }}
         uses: actions/upload-artifact@v3
         with:
           name: error_log
