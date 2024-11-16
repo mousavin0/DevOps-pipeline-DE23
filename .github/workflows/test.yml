@@ -1,0 +1,53 @@
+name: test
+
+on:
+  workflow_dispatch:  # Allows manual trigger with an optional parameter for logging errors
+    inputs:
+      log_errors:
+        description: 'Set to true to log errors if tests fail'
+        required: true
+        default: 'true'
+
+jobs:
+  # Run unit and integration tests together in one job
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        id: unit_tests
+        run: |
+          echo "Running unit tests..."
+          pytest tests/unit_test.py
+        continue-on-error: true  # Allow this step to fail but continue the workflow
+
+      - name: Run integration tests
+        id: integration_tests
+        run: |
+          echo "Running integration tests..."
+          pytest tests/integration_test.py
+        continue-on-error: true  # Allow this step to fail but continue the workflow
+
+      - name: Capture error logs from unit tests
+        if: ${{ steps.unit_tests.outcome == 'failure' && github.event.inputs.log_errors == 'true' }}
+        run: |
+          echo "Unit tests failed. Error message: ${{ steps.unit_tests.error }}" >> error_log.txt
+          echo "Check the unit test logs above for more details." >> error_log.txt
+
+      - name: Capture error logs from integration tests
+        if: ${{ steps.integration_tests.outcome == 'failure' && github.event.inputs.log_errors == 'true' }}
+        run: |
+          echo "Integration tests failed. Error message: ${{ steps.integration_tests.error }}" >> error_log.txt
+          echo "Check the integration test logs above for more details." >> error_log.txt
+
+      - name: Upload error log if tests failed
+        if: ${{ github.event.inputs.log_errors == 'true' && (steps.unit_tests.outcome == 'failure' || steps.integration_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: error_log
+          path: error_log.txt
