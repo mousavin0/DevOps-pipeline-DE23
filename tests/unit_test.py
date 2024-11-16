@@ -5,7 +5,7 @@ class TestExtractTempHumidity(unittest.TestCase):
     def test_extract_temp_humidity(self):
         """Test extract_temp_humidity with example weather data."""
         # Example input data
-        example_weather_data = {
+        example_weather_data = [{
             "lat": 52.2297,
             "lon": 21.0122,
             "timezone": "Europe/Warsaw",
@@ -20,7 +20,7 @@ class TestExtractTempHumidity(unittest.TestCase):
                     ]
                 }
             ]
-        }
+        }]
 
         # Expected output
         expected_temps = [279.13]
