@@ -19,6 +19,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Debugging: List the directory contents to verify locations
+      - name: Debug directory structure
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing files in the current directory:"
+          ls -alh
+          echo "Listing files in the parent directory:"
+          ls -alh $(pwd)/..
+          echo "Listing files in the tests directory:"
+          ls -alh tests/
+
+
       - name: Run unit tests
         id: unit_tests
         run: |
