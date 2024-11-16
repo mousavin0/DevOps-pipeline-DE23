@@ -12,7 +12,7 @@ class TestExtractTempHumidity(unittest.TestCase):
             "timezone_offset": 3600,
             "data": [
                 {
-                    "dt": 12,
+                    "dt": 1645888976,
                     "temp": 279.13,
                     "humidity": 64,
                     "weather": [
